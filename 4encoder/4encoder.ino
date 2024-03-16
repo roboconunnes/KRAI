@@ -1,43 +1,42 @@
-#define M1A 23
-#define M1B 22
-#define M2A 21
-#define M2B 19
-#define M3A 18
-#define M3B 5
-#define M4A 17
-#define M4B 16
+#include "KRAI_MotorESP32.h"
 
-#define MP1 4
-#define MP2 0
-#define MP3 2
-#define MP4 15
+const int M1A = 23;
+const int M1B = 22;
+const int M1P = 21;
 
-#define E1A 12
-#define E1B 13
-#define E2A 32
-#define E2B 33
-#define E3A 25
-#define E3B 26
-#define E4A 27
-#define E4B 14 
+const int M2A = 19;
+const int M2B = 18;
+const int M2P = 5;
 
-int pinMotor[12] = {23,22,21,19,18,5,17,16,4,0,2,15};
+const int M3A = 17;
+const int M3B = 16;
+const int M3P = 4;
 
-int pos1, pos2, pos3, pos4;
+const int M4A = 0;
+const int M4B = 2;
+const int M4P = 15;
+
+const int E1A = 34;
+const int E1B = 35;
+const int E2A = 32;
+const int E2B = 33;
+const int E3A = 25;
+const int E3B = 26;
+const int E4A = 27;
+const int E4B = 14; 
+
+int 
+pos1, 
+pos2, 
+pos3, 
+pos4;
+
+KRAI_MotorESP32 motor1(M1A, M1B, M1P);
+KRAI_MotorESP32 motor2(M2A, M2B, M2P);
+KRAI_MotorESP32 motor3(M3A, M3B, M3P);
+KRAI_MotorESP32 motor4(M4A, M4B, M4P);
 
 void setup() {
-  Serial.begin(115200);
-
-  for (int i=0; i<12; i++){
-    pinMode(pinMotor[i], OUTPUT);
-  }
-
-  ledcSetup(0, 5000, 8);
-  ledcAttachPin(MP1, 0);
-  ledcAttachPin(MP2, 0);
-  ledcAttachPin(MP3, 0);
-  ledcAttachPin(MP4, 0);
-
   pinMode(E1A, INPUT_PULLUP);
   pinMode(E1B, INPUT_PULLUP);
   pinMode(E2A, INPUT_PULLUP);
@@ -53,19 +52,28 @@ void setup() {
 }
 
 void loop() {
-  Serial.print(pos1);Serial.print("|");
-  Serial.print(pos2);Serial.print("|");
-  Serial.print(pos3);Serial.print("|");
+  Serial.print(pos1);Serial.print(" | ");
+  Serial.print(pos2);Serial.print(" | ");
+  Serial.print(pos3);Serial.print(" | ");
   Serial.println(pos4);
 
-  int O1 = pos1/56;
-  int O2 = pos2/248;
-  int O3 = pos3/57;
-  int O4 = pos4/244;
+  delayMicroseconds(10);
 
-  if (O1 < 1 && O2 < 1 && O3 < 1 && O4 < 1){
-    motor(255,255,255,255);
-  } else {
-    motor(0,0,0,0);
+  int w1 = pos1/56;
+  int w2 = pos2/248;
+  int w3 = pos3/57;
+  int w4 = pos4/244;
+
+  if(w1 < 5 && w2 < 5 && w3 < 5 && w4 < 5){
+    motor1.run(1, 100);
+    motor2.run(1, 100);
+    motor3.run(1, 100);
+    motor4.run(1, 100);
+  } 
+  else {
+    motor1.run(1, 0);
+    motor2.run(1, 0);
+    motor3.run(1, 0);
+    motor4.run(1, 0);
   }
 }
